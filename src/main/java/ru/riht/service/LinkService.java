@@ -1,4 +1,13 @@
 package ru.riht.service;
 
-public class LinkService {
+import ru.riht.dto.LinkDto;
+import ru.riht.model.Link;
+
+public interface LinkService {
+
+    Link shortenLink(String link);
+
+    LinkDto getLink(String link);
+
+    void updateClickCount(String shortCode);
 }
