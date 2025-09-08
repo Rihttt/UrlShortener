@@ -32,4 +32,7 @@ public class Link {
 
     @Column(name = "click_count", nullable = false)
     private int clickCount;
+
+    @Column(name = "user_id")
+    private UUID userId;
 }

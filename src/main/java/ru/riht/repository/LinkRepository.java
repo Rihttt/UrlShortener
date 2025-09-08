@@ -4,8 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import ru.riht.model.Link;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface LinkRepository extends JpaRepository<Link, UUID> {
@@ -28,4 +30,12 @@ public interface LinkRepository extends JpaRepository<Link, UUID> {
             @Param("shortCode") String shortCode
     );
 
+    @Query("""
+        SELECT l.shortCode
+        FROM Link l
+        WHERE l.userId = :userId
+    """)
+    List<String> findUserLinks(
+            @Param("userId")UUID userId
+    );
 }

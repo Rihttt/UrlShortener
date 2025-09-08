@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru-RU">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +24,20 @@
             border-radius: 5px;
             margin-top: 20px;
             display: none;
+        }
+        .history-section {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .link-item {
+            border-bottom: 1px solid;
+            padding: 10px 0;
+        }
+        .link-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
@@ -60,12 +74,10 @@
 
     <!-- Правая колонка с историей ссылок -->
     <div class="history-section">
-        <h5>Ваши ссылки</h5>
+        <h5>История ссылок</h5>
         <div th:if="${userLinks != null and !userLinks.isEmpty()}">
             <div th:each="link : ${userLinks}" class="link-item">
-                <div><strong th:text="${link.shortCode}"></strong></div>
-                <div class="small" th:text="${link.originalUrl}"></div>
-                <div class="small text-muted">Переходов: <span th:text="${link.clickCount}"></span></div>
+                <div><a th:href="${link}" th:text="${link}"></a></div>
             </div>
         </div>
         <div th:if="${userLinks == null or userLinks.isEmpty()}" class="text-muted">
@@ -74,6 +86,8 @@
     </div>
 
 </div>
+
+
 
 <script>
     // Показываем блок с результатом, если он есть
