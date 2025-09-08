@@ -5,7 +5,7 @@ import ru.riht.model.Link;
 
 public interface LinkService {
 
-    Link shortenLink(String link);
+    Link shortenLink(String link, String customCode);
 
     LinkDto getLink(String link);
 

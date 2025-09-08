@@ -26,13 +26,17 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
-    public Link shortenLink(String link) {
+    public Link shortenLink(String link, String customCode) {
+
+        String shortCode = customCode == null ? createShortCode() : customCode;
+
         Link shortLink = Link.builder()
                 .originalUrl(link)
-                .shortCode(createShortCode())
+                .shortCode(shortCode)
                 .createdAt(LocalDateTime.now())
                 .build();
-        return linkRepository.save(shortLink);
+
+            return linkRepository.save(shortLink);
     }
 
     private String createShortCode() {
