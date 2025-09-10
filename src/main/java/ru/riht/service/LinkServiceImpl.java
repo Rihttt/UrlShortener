@@ -7,9 +7,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import ru.riht.dto.LinkDto;
 import ru.riht.model.Link;
 import ru.riht.repository.LinkRepository;
+import ru.riht.model.projections.LinkDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +19,7 @@ import static ru.riht.constants.ServiceConstants.SHORT_URL;
 
 @Service
 @RequiredArgsConstructor
-public class LinkServiceImpl implements LinkService {
+public class  LinkServiceImpl implements LinkService {
 
     private final LinkRepository linkRepository;
 
@@ -27,17 +27,16 @@ public class LinkServiceImpl implements LinkService {
 
     @Transactional
     @Override
-    public LinkDto getLink(String shortCode) {
+    public String getLink(String shortCode) {
         updateClickCount(shortCode);
-        return LinkDto.builder()
-                .originalUrl(linkRepository.findByShortCode(shortCode))
-                .build();
+        return linkRepository.findByShortCode(shortCode);
+
     }
 
     @Override
     public Link shortenLink(String link, String customCode, String userId) {
 
-        String shortCode = customCode == null ? createShortCode() : customCode;
+        String shortCode = customCode.isEmpty() ? createShortCode() : customCode;
 
         Link shortLink = Link.builder()
                 .originalUrl(link)
@@ -75,12 +74,9 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
-    public List<String> getUserLinks(String userId){
+    public List<LinkDto> getUserLinks(String userId){
 
-        List<String> userLinksShortCodes = linkRepository.findUserLinks(UUID.fromString(userId));
-        return userLinksShortCodes.stream()
-                .map(l -> SHORT_URL + l)
-                .toList();
+        return linkRepository.findUserLinks(UUID.fromString(userId), SHORT_URL);
     }
 
     private String createShortCode() {

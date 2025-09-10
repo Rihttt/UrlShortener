@@ -12,7 +12,7 @@ public class LinkDto {
 
     private UUID id;
     private String originalUrl;
-    private String shortCode;
+    private String shortUrl;
     private LocalDateTime createdAt;
     private int clickCount;
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import ru.riht.model.Link;
+import ru.riht.model.projections.LinkDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,11 +32,17 @@ public interface LinkRepository extends JpaRepository<Link, UUID> {
     );
 
     @Query("""
-        SELECT l.shortCode
+        SELECT l.id as userId,
+        l.originalUrl as originalUrl,
+        concat(:shortUrlPrefix,l.shortCode) as shortUrl,
+        l.createdAt as createdAt,
+        l.clickCount as clickCount
         FROM Link l
         WHERE l.userId = :userId
+        ORDER BY l.createdAt DESC
     """)
-    List<String> findUserLinks(
-            @Param("userId")UUID userId
+    List<LinkDto> findUserLinks(
+            @Param("userId")UUID userId,
+            @Param("shortUrlPrefix") String shortUrlPrefix
     );
 }

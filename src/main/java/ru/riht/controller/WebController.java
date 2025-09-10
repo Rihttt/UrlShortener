@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import ru.riht.model.Link;
 import ru.riht.service.LinkService;
+import ru.riht.model.projections.LinkDto;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class WebController {
     public String index(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String userId = linkService.getUserIdFromCookie(request, response);
-        List<String> userLinks = linkService.getUserLinks(userId);
+        List<LinkDto> userLinks = linkService.getUserLinks(userId);
 
         model.addAttribute("userLinks", userLinks);
         model.addAttribute("originalUrl", "");
@@ -48,12 +49,12 @@ public class WebController {
                           Model model) {
 
         String userId = linkService.getUserIdFromCookie(request, response);
-        List<String> userLinks = linkService.getUserLinks(userId);
+
 
         String shortUrl ="";
 
         try {
-            if(customCode != null) {
+            if(!customCode.isEmpty()) {
                 linkService.shortenLink(originalUrl, customCode, userId);
                 shortUrl = "http://localhost:8080/" + customCode;
             }else{
@@ -65,6 +66,8 @@ public class WebController {
             model.addAttribute("error", e.getMessage());
         }
 
+        List<LinkDto> userLinks = linkService.getUserLinks(userId);
+
         model.addAttribute("userLinks", userLinks);
         model.addAttribute("originalUrl", originalUrl);
         model.addAttribute("shortUrl", shortUrl);
@@ -74,7 +77,7 @@ public class WebController {
     @GetMapping("/{shortCode}")
     public RedirectView getLink(@PathVariable String shortCode) {
 
-        String originalUrl = linkService.getLink(shortCode).getOriginalUrl();
+        String originalUrl = linkService.getLink(shortCode);
 
         if (originalUrl != null) {
             RedirectView redirectView = new RedirectView();
