@@ -10,16 +10,16 @@
 <body>
 <h1 class="text-center mb-4">Сокращатель ссылок</h1>
 <div style="display: flex;">
-    <div>
-        <div class="input">
+    <div style="flex: 0 0 30%;">
+        <div class="input" style="align-items: stretch; width: auto">
             <!-- Форма для ввода URL -->
             <form th:action="@{/shorten}" method="post" class="input-group mb-3">
-                <div>
+                <div style="align-items: stretch; width: inherit ">
                     <label for="originalUrl" class="form-label">Ваша ссылка:</label>
-                    <input type="url" class="form-control" id="originalUrl" name="originalUrl" style="width: 30rem"
+                    <input type="url" class="form-control" id="originalUrl" name="originalUrl" style="width: inherit"
                            placeholder="https://example.com/very-long-url" required>
                     <label for="customCode" class="form-label">Кастомный код:</label>
-                    <input type="text" class="form-control" id="customCode" name="customCode" style="width: 30rem">
+                    <input type="text" class="form-control" id="customCode" name="customCode" style="width: inherit">
                 </div>
                 <button type="submit" class="btn btn-primary w-100" style="margin-top: 10px; border-radius: 5px">
                     Сократить
@@ -31,7 +31,9 @@
             <h4>Ваша короткая ссылка:</h4>
             <div class="input-group mb-3">
                 <input type="text" class="form-control" th:value="${shortUrl}" id="shortUrl" readonly>
-                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">Копировать</button>
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        onclick="copyToClipboard(document.getElementById('shortUrl').value)">Копировать</button>
             </div>
         </div>
 
@@ -41,30 +43,52 @@
         </div>
     </div>
     <!-- Правая колонка с историей ссылок -->
-    <div class="history-section" style="margin-left: 1%;width: 70%;">
+    <div class="history-section" style="margin-left: 1%;flex: 1;">
         <h5 style="margin-left: 40%">История ссылок</h5>
         <div style="overflow-y: auto; max-height: 95%">
             <div th:if="${userLinks != null and !userLinks.isEmpty()}">
-                <div th:each="link : ${userLinks}" class="link-item">
+                <div th:each="link : ${userLinks}" class="link-item" id="link-item-[[${link.getId()}]]">
 
-                    <div style="margin-left: 3px; display: flex">
-                        <a th:href="${link.getShortUrl()}" th:text="${link.getShortUrl()}"></a>
+                    <div style="margin-left: 6px; display: flex">
+                        <a style="font-weight: bold; font-size: 20px"
+                           th:text="${link.getShortUrl()}"
+                           th:data-short-url="${link.getShortUrl()}">
+                        </a>
 
                         <div style="margin-left: auto; padding-right:5px; width: fit-content"
                              th:text="'Количество кликов: ' + ${link.getClickCount()}">
                         </div>
                     </div>
 
-                    <div style=""
-                         th:text="'Дата создания: ' + ${link.getCreatedAt()}">
+                    <div style="margin-left: 6px"
+                         th:text="'Дата создания: ' + ${link.getCreatedAt().toLocalDate()}">
                     </div>
 
-                    <div class="original-link">
+                    <div class="original-link" style="margin-left: 6px">
                         <p class="text-muted"><span th:text="${link.getOriginalUrl()}"></span></p>
                     </div>
 
-                    <div style="margin-left: 3px; display: flex">
+                    <div style="margin-left: 6px; display: flex">
+                        <a th:href="${link.getShortUrl()}"
+                           class="buttons-history button-redirect"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           aria-label="Перейти по ссылке"></a>
 
+                        <a
+                           class="buttons-history button-copy"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           aria-label="Скопировать ссылку">
+                        </a>
+
+                        <a
+                           class="buttons-history button-qr"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           aria-label="Просмотреть qr-код">
+
+                        </a>
                     </div>
                 </div>
             </div>
@@ -76,21 +100,40 @@
 </div>
 
 <script>
-    // Показываем блок с результатом, если он есть
     document.addEventListener('DOMContentLoaded', function() {
         const resultBox = document.getElementById('resultBox');
         if (resultBox) {
             resultBox.style.display = 'block';
         }
+
+        const historySection = document.querySelector('.history-section');
+
+        historySection.addEventListener('click', (e) => {
+            if (e.target.classList.contains('button-copy')) {
+                const linkItem = e.target.closest('.link-item');
+                if (!linkItem) return;
+
+                const shortUrlLink = linkItem.querySelector('a[style*="font-weight: bold"]');
+                if (!shortUrlLink) return;
+
+                const textToCopy = shortUrlLink.textContent.trim();
+
+                copyToClipboard(textToCopy);
+            }
+        });
     });
 
-    // Функция копирования в буфер обмена
-    function copyToClipboard() {
-        const shortUrlInput = document.getElementById('shortUrl');
-        shortUrlInput.select();
-        document.execCommand('copy');
-        alert('Ссылка скопирована в буфер обмена!');
+    async function copyToClipboard(textToCopy) {
+
+        try {
+            await navigator.clipboard.writeText(textToCopy);
+            alert('Ссылка скопирована в буфер обмена!');
+        } catch (err) {
+            console.error('Ошибка копирования:', err);
+            alert('Не удалось скопировать. Попробуйте вручную.');
+        }
     }
+
 </script>
 </body>
 </html>
