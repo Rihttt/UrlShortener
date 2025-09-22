@@ -31,8 +31,19 @@ public interface LinkRepository extends JpaRepository<Link, UUID> {
             @Param("shortCode") String shortCode
     );
 
+    @Modifying
     @Query("""
-        SELECT l.id as userId,
+        UPDATE Link l
+            SET l.qrCodeId = :qrCodeId
+        WHERE l.id = :urlId
+    """)
+    void updateQr(
+            @Param("urlId") UUID urlId,
+            @Param("qrCodeId") UUID qrCodeId
+    );
+
+    @Query("""
+        SELECT l.id as id,
         l.originalUrl as originalUrl,
         concat(:shortUrlPrefix,l.shortCode) as shortUrl,
         l.createdAt as createdAt,

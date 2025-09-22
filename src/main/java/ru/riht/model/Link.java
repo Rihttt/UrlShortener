@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Link {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "original_url", unique = true, nullable = false)
@@ -35,4 +35,7 @@ public class Link {
 
     @Column(name = "user_id")
     private UUID userId;
+
+    @Column(name = "qrcode_id")
+    private UUID qrCodeId;
 }
