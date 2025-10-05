@@ -2,7 +2,7 @@ package ru.riht.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.riht.model.projections.LinkDto;
+import ru.riht.model.projections.LinkProjection;
 
 import ru.riht.model.Link;
 
@@ -17,5 +17,5 @@ public interface LinkService {
     String getUserIdFromCookie(HttpServletRequest request,
                                HttpServletResponse response);
 
-    List<LinkDto> getUserLinks(String userId);
+    List<LinkProjection> getUserLinks(String userId);
 }

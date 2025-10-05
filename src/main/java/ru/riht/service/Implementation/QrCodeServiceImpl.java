@@ -1,4 +1,4 @@
-package ru.riht.service;
+package ru.riht.service.Implementation;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -8,9 +8,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.riht.model.QrCode;
-import ru.riht.model.projections.QrCodeDto;
+import ru.riht.model.projections.QrCodeProjection;
 import ru.riht.repository.LinkRepository;
 import ru.riht.repository.QrRepository;
+import ru.riht.service.QrCodeService;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,9 +31,9 @@ public class QrCodeServiceImpl implements QrCodeService {
 
     @Transactional
     @Override
-    public QrCodeDto getOrCreateQrCode(String url, UUID urlId) throws IOException, WriterException {
+    public QrCodeProjection getOrCreateQrCode(String url, UUID urlId) throws IOException, WriterException {
 
-        QrCodeDto existing = qrRepository.findByUrl(urlId);
+        QrCodeProjection existing = qrRepository.findByUrl(urlId);
         if(existing != null) {
             return existing;
         }

@@ -15,16 +15,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import ru.riht.config.AppConfig;
 import ru.riht.model.Link;
-import ru.riht.model.projections.QrCodeDto;
+import ru.riht.model.projections.QrCodeProjection;
 import ru.riht.service.LinkService;
-import ru.riht.model.projections.LinkDto;
+import ru.riht.model.projections.LinkProjection;
 import ru.riht.service.QrCodeService;
 
 import java.util.List;
 import java.util.UUID;
-
-import static ru.riht.constants.ServiceConstants.SHORT_URL;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,12 +31,13 @@ public class WebController {
 
     private final LinkService linkService;
     private final QrCodeService qrCodeService;
+    private final AppConfig appConfig;
 
     @GetMapping("/")
     public String index(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String userId = linkService.getUserIdFromCookie(request, response);
-        List<LinkDto> userLinks = linkService.getUserLinks(userId);
+        List<LinkProjection> userLinks = linkService.getUserLinks(userId);
 
         model.addAttribute("userLinks", userLinks);
         model.addAttribute("originalUrl", "");
@@ -61,11 +61,11 @@ public class WebController {
         try {
             if(!customCode.isEmpty()) {
                 linkService.shortenLink(originalUrl, customCode, userId);
-                shortUrl = SHORT_URL + customCode;
+                shortUrl = appConfig.getBaseUrl(request) + customCode;
                 redirectAttributes.addFlashAttribute("shortUrl", shortUrl);
             }else{
                 Link shortenedLink = linkService.shortenLink(originalUrl, customCode, userId);
-                shortUrl = SHORT_URL + shortenedLink.getShortCode();
+                shortUrl = appConfig.getBaseUrl(request) + shortenedLink.getShortCode();
                 redirectAttributes.addFlashAttribute("shortUrl", shortUrl);
             }
         } catch (DataIntegrityViolationException error) {
@@ -73,7 +73,7 @@ public class WebController {
             model.addAttribute("error", e.getMessage());
         }
 
-        List<LinkDto> userLinks = linkService.getUserLinks(userId);
+        List<LinkProjection> userLinks = linkService.getUserLinks(userId);
 
         model.addAttribute("userLinks", userLinks);
         model.addAttribute("originalUrl", originalUrl);
@@ -102,7 +102,7 @@ public class WebController {
     @ResponseBody
     public ResponseEntity<?> getQrAsJson(@RequestBody QrRequest request) {
         try {
-            QrCodeDto qrCode = qrCodeService.getOrCreateQrCode(request.getUrl(),request.getUrlId());
+            QrCodeProjection qrCode = qrCodeService.getOrCreateQrCode(request.getUrl(),request.getUrlId());
             String base64Image = "data:image/png;base64," + java.util.Base64.getEncoder()
                     .encodeToString(qrCode.getImageData());
             QrResponse qrResponse = new QrResponse(base64Image, request.getUrl());

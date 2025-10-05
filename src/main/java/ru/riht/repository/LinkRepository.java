@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import ru.riht.model.Link;
-import ru.riht.model.projections.LinkDto;
+import ru.riht.model.projections.LinkProjection;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,8 +53,14 @@ public interface LinkRepository extends JpaRepository<Link, UUID> {
         WHERE l.userId = :userId
         ORDER BY l.createdAt DESC
     """)
-    List<LinkDto> findUserLinks(
+    List<LinkProjection> findUserLinks(
             @Param("userId")UUID userId,
             @Param("shortUrlPrefix") String shortUrlPrefix
     );
+
+    @Modifying
+    @Query("""
+        DELETE FROM Link l WHERE l.createdAt < :deletionDate
+    """)
+    int deleteByCreatedAtBefore(@Param("deletionDate") LocalDateTime deletionDate);
 }

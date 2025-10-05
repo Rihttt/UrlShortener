@@ -1,4 +1,4 @@
-package ru.riht.service;
+package ru.riht.service.Implementation;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 
 import ru.riht.model.Link;
 import ru.riht.repository.LinkRepository;
-import ru.riht.model.projections.LinkDto;
+import ru.riht.model.projections.LinkProjection;
+import ru.riht.service.LinkService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,7 +75,7 @@ public class  LinkServiceImpl implements LinkService {
     }
 
     @Override
-    public List<LinkDto> getUserLinks(String userId){
+    public List<LinkProjection> getUserLinks(String userId){
 
         return linkRepository.findUserLinks(UUID.fromString(userId), SHORT_URL);
     }
