@@ -11,7 +11,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "qr_codes")
-//@SQLInsert(sql = "INSERT into qr_codes (id,url,image_data,url_id) values (?,?,?,?)")
 public class QrCode {
 
     @Id
