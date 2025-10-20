@@ -10,12 +10,11 @@ spring:
     properties:
         hibernate:
           format_sql: true
-
+  flyway:
+    enabled: true
+    locations: classpath:db/migrations
+    baseline-on-migrate: true
 logging:
-  level:
-    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: DEBUG
 
 app:
   base-url: "http://localhost:8080/"
