@@ -23,4 +23,4 @@ jobs:
           server: ${{secrets.CAPROVER_SERVER}}
           app: 'shrtu'
           token: '${{secrets.APP_TOKEN}}'
-          image: 'ghcr.io/Rihttt/UrlShortener:latest'
+          image: 'ghcr.io/rihttt/urlshortener:latest'
