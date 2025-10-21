@@ -17,7 +17,7 @@ spring:
 logging:
 
 app:
-  base-url: "http://localhost:8080/"
+  base-url: ${BASE_URL}
   cleanup:
     day-to-keep: 10
     cron: "0 30 13 * * ?"
