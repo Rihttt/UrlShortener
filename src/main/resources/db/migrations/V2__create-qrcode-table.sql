@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS public.links(
+CREATE TABLE IF NOT EXISTS public.qr_codes(
     id uuid primary key not null,
     url varchar not null ,
     image_data bytea,
