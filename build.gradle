@@ -32,12 +32,13 @@ dependencies {
     implementation("com.google.zxing:javase:3.5.3")
 
     implementation platform('org.apache.groovy:groovy-bom:4.0.26')
-    implementation 'org.apache.groovy:groovy'
+    implementation "org.apache.groovy:groovy"
     implementation "org.apache.groovy:groovy-sql"
 
     testImplementation platform("org.spockframework:spock-bom:2.3-groovy-4.0")
     testImplementation "org.spockframework:spock-core"
-    testImplementation 'org.springframework:spring-test:7.0.0-RC2'
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework:spring-test:7.0.0-RC2"
 
     annotationProcessor 'org.projectlombok:lombok'
 
