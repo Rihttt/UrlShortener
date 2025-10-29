@@ -43,7 +43,6 @@ public class QrCodeServiceImpl implements QrCodeService {
                 .imageData(generateQrCodeImage(url, 200,200))
                 .urlId(urlId)
                 .build();
-        System.out.println(Arrays.toString(qrCode.getImageData()));
         qrRepository.save(qrCode);
         linkRepository.updateQr(urlId, qrCode.getId());
 
