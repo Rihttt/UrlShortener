@@ -46,7 +46,7 @@ public class  LinkServiceImpl implements LinkService {
                 .userId(UUID.fromString(userId))
                 .build();
 
-            return linkRepository.save(shortLink);
+        return linkRepository.save(shortLink);
     }
 
     @Override
